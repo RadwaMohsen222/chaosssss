@@ -12,7 +12,7 @@ body {
 
 video {
   position: absolute;
-  object-fit: cover;
+  object-fit: contain;
   opacity: 0.9;
 }
 </style>
@@ -34,6 +34,7 @@ const videos = [
 ];
 
 videos.forEach((src, index) => {
+
   const vid = document.createElement("video");
   vid.src = src;
   vid.autoplay = true;
@@ -41,17 +42,18 @@ videos.forEach((src, index) => {
   vid.loop = true;
   vid.playsInline = true;
 
-  // Portrait videos (1–6)
+  // MUCH smaller sizes
+
   if (index < 6) {
-    vid.style.width = (15 + Math.random() * 15) + "vw"; 
-  } 
-  // Landscape videos (7–10)
-  else {
-    vid.style.width = (25 + Math.random() * 20) + "vw";
+    // portrait
+    vid.style.width = (8 + Math.random() * 8) + "vw";
+  } else {
+    // landscape
+    vid.style.width = (12 + Math.random() * 10) + "vw";
   }
 
-  vid.style.top = Math.random() * 85 + "%";
-  vid.style.left = Math.random() * 85 + "%";
+  vid.style.top = Math.random() * 90 + "%";
+  vid.style.left = Math.random() * 90 + "%";
   vid.style.zIndex = Math.floor(Math.random() * 20);
 
   document.body.appendChild(vid);
