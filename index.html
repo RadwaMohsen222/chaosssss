@@ -13,7 +13,18 @@ body {
 video {
   position: absolute;
   object-fit: contain;
-  opacity: 0.9;
+  opacity: 0.85; /* Slightly more transparent when resting */
+  
+  /* 1. This line makes the animation smooth and bouncy */
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
+  cursor: pointer; /* Changes mouse to a clicking hand on PC */
+}
+
+/* 2. This controls what happens when touched/hovered */
+video:hover {
+  transform: scale(1.25); /* The "Pop" - makes it 25% bigger */
+  z-index: 100 !important; /* The "!important" forces it to the very top layer */
+  opacity: 1; /* Makes it 100% solid/clear */
 }
 </style>
 </head>
@@ -21,39 +32,43 @@ video {
 
 <script>
 const videos = [
-  "video1.mp4",
-  "video2.mp4",
-  "video3.mp4",
-  "video4.mp4",
-  "video5.mp4",
-  "video6.mp4",
-  "video7.mp4",
-  "video8.mp4",
-  "video9.mp4",
-  "video10.mp4"
+  { src: "video1.mp4", type: "portrait", scale: 0.6 },
+  { src: "video2.mp4", type: "portrait", scale: 0.7 },
+  { src: "video3.mp4", type: "portrait", scale: 0.8 },
+  { src: "video4.mp4", type: "portrait", scale: 1.0 },
+  { src: "video5.mp4", type: "portrait", scale: 0.7 },
+  { src: "video6.mp4", type: "portrait", scale: 0.8 },
+  { src: "video7.mp4", type: "landscape", scale: 1.0 },
+  { src: "video8.mp4", type: "landscape", scale: 0.5 },
+  { src: "video9.mp4", type: "landscape", scale: 0.4 },
+  { src: "video10.mp4", type: "landscape", scale: 0.3 }
 ];
 
-videos.forEach((src, index) => {
+const globalBaseScale = 1.0; 
+const safeMargin = 4; 
 
+videos.forEach((vidData) => {
   const vid = document.createElement("video");
-  vid.src = src;
+  vid.src = vidData.src;
   vid.autoplay = true;
   vid.muted = true;
   vid.loop = true;
   vid.playsInline = true;
 
-  // MUCH smaller sizes
+  let baseWidthVW = vidData.type === "portrait" ? 10 : 16;
+  
+  let finalWidth = baseWidthVW * vidData.scale * globalBaseScale;
+  vid.style.width = finalWidth + "vw";
 
-  if (index < 6) {
-    // portrait
-    vid.style.width = (8 + Math.random() * 8) + "vw";
-  } else {
-    // landscape
-    vid.style.width = (12 + Math.random() * 10) + "vw";
-  }
+  let maxLeft = 100 - finalWidth - safeMargin; 
+  let maxTop = 100 - 35 - safeMargin; 
 
-  vid.style.top = Math.random() * 90 + "%";
-  vid.style.left = Math.random() * 90 + "%";
+  let randomLeft = safeMargin + (Math.random() * (maxLeft - safeMargin));
+  let randomTop = safeMargin + (Math.random() * (maxTop - safeMargin));
+
+  vid.style.left = randomLeft + "vw";
+  vid.style.top = randomTop + "vh";
+  
   vid.style.zIndex = Math.floor(Math.random() * 20);
 
   document.body.appendChild(vid);
